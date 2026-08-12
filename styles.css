@@ -1,0 +1,315 @@
+/**
+ * @file    styles.css
+ * @brief   品牌视觉系统——思无界 Boundless Mind
+ * @author  ui-designer | 项目: self-intro | Phase 2 · T8
+ * @date    2026-08-12
+ *
+ * @details
+ * 为「展厅 + 模拟器」交互 demo 提供统一视觉系统:
+ *   - 品牌配色:靛蓝 #4F46E5 / 深靛 #312E81 / 青 #06B6D4 / 亮背景 #F7F8FC
+ *   - 7 部门色(部门徽章/色点):管理 #4F46E5、质量 #64748B、执行 #F59E0B、
+ *     研发 #F43F5E、测试 #10B981、UI设计 #8B5CF6、特殊 #0EA5E9
+ *   - 组件:卡片 / 按钮 / 进度条 / 选项卡 / 步骤卡 / 部门网格
+ *   - 响应式:窄屏可读,其它设备可开
+ *   - 中文排版可读性优先;键盘焦点可见(可访问性)
+ *
+ * @note   与 Phase 1 幻灯(t3-slides)共用同一套 CSS 变量,保证无风格漂移。
+ *         深色页头 #0F172A → #312E81 渐变承继封面品牌页风格。
+ */
+:root{
+  /* ---- 品牌配色 ---- */
+  --primary:#4F46E5;        /* 主色 靛蓝 */
+  --deep:#312E81;           /* 深靛 */
+  --accent:#06B6D4;         /* 强调色 青 */
+  --bg:#F7F8FC;             /* 冷白亮背景 */
+  --panel:#ffffff;          /* 白卡面 */
+  --line:#E4E7F0;           /* 卡片边线 */
+  --ink:#111827;            /* 墨 */
+  --muted:#6B7280;          /* 弱化字 */
+  --faint:#9CA3AF;          /* 更弱化字 */
+  --dark-start:#0F172A;     /* 深色页头起点 */
+  --dark-mid:#1E1B4B;       /* 深色页头中段 */
+  --ok:#059669;             /* 通过/正确绿 */
+  --danger:#DC2626;         /* 打回/错误红 */
+
+  /* ---- 7 部门色 ---- */
+  --c-mgmt:#4F46E5;         /* 管理部 */
+  --c-qual:#64748B;         /* 质量部 */
+  --c-exec:#F59E0B;         /* 执行部 */
+  --c-rd:#F43F5E;           /* 研发部 */
+  --c-test:#10B981;         /* 测试部 */
+  --c-ui:#8B5CF6;           /* UI设计部门 */
+  --c-spc:#0EA5E9;          /* 特殊部门 */
+
+  /* ---- 字体 ---- */
+  --font:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Courier New",monospace;
+
+  /* ---- 尺寸/圆角/阴影 ---- */
+  --radius:14px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(17,24,39,.04),0 8px 24px rgba(17,24,39,.06);
+  --shadow-hover:0 2px 4px rgba(17,24,39,.06),0 14px 34px rgba(17,24,39,.10);
+  --header-h:64px;
+}
+
+/* ================= 基础重置 ================= */
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font);
+  font-size:16px;
+  line-height:1.6;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+button{font-family:inherit}
+[hidden]{display:none !important}
+
+/* ================= 页头(site-header) ================= */
+.site-header{
+  height:var(--header-h);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:0 28px;
+  background:linear-gradient(90deg,var(--dark-start) 0%,var(--dark-mid) 55%,var(--deep) 100%);
+  box-shadow:0 2px 12px rgba(15,23,42,.28);
+  position:sticky;top:0;z-index:20;
+}
+
+/* 品牌徽标锁组:无限环 ∞ + 思无界 / BOUNDLESS MIND */
+.brand-lockup{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-lockup .logo{width:64px;height:26px;flex:none;display:block}
+.brand-word{display:flex;flex-direction:column;line-height:1.2;min-width:0}
+.brand-zh{font-size:19px;font-weight:800;color:#fff;letter-spacing:3px;white-space:nowrap}
+.brand-en{font-size:9px;font-weight:600;letter-spacing:3.5px;color:#A5B4FC;margin-top:2px;white-space:nowrap}
+
+/* 主视图导航 */
+.site-nav{display:flex;gap:8px;flex:none}
+.nav-btn{
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.06);
+  color:#E0E7FF;
+  font-size:14px;
+  letter-spacing:2px;
+  padding:7px 20px;
+  border-radius:22px;
+  cursor:pointer;
+  transition:background .18s,color .18s,transform .06s;
+}
+.nav-btn:hover{background:rgba(255,255,255,.16)}
+.nav-btn.is-active{
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  border-color:transparent;
+  color:#fff;
+  font-weight:700;
+}
+.nav-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ================= 主区域布局 ================= */
+#app{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:28px 20px 48px}
+.view{display:none}
+.view.is-active{display:block;animation:fadeIn .28s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* 视图头部 */
+.view-head{margin-bottom:20px}
+.view-title{font-size:28px;font-weight:800;letter-spacing:1px;color:var(--ink)}
+.view-title::before{content:"∞ ";color:var(--primary);font-weight:800}
+.view-sub{margin-top:4px;color:var(--muted);font-size:14px;letter-spacing:.5px}
+
+/* ================= 展厅:选项卡 ================= */
+.gallery-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.g-tab{
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  font-size:14px;
+  padding:7px 16px;
+  border-radius:20px;
+  cursor:pointer;
+  transition:all .18s;
+}
+.g-tab:hover{border-color:var(--primary);color:var(--primary)}
+.g-tab.is-active{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#fff;
+  font-weight:700;
+  box-shadow:0 4px 12px rgba(79,70,229,.35);
+}
+.g-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ================= 展厅:内容面板 ================= */
+.gallery-panels .g-panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:22px 24px;
+}
+.g-panel h2{font-size:21px;font-weight:800;color:var(--ink);letter-spacing:.5px}
+.g-panel .g-desc{margin-top:8px;color:var(--muted);font-size:15px;line-height:1.7}
+.g-panel .g-detail{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.g-panel .g-detail li{
+  list-style:none;
+  padding-left:24px;
+  position:relative;
+  font-size:15px;
+  line-height:1.7;
+  color:#1F2937;
+}
+.g-panel .g-detail li::before{content:"▸";position:absolute;left:6px;color:var(--accent);font-weight:700}
+
+/* ================= 展厅:7 部门网格 ================= */
+.org-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:18px}
+.dept-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px 18px;
+  transition:transform .16s,box-shadow .16s,border-color .16s;
+  cursor:pointer;
+  border-top:3px solid var(--dept-color,var(--primary));
+}
+.dept-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--dept-color,var(--primary))}
+.dept-card:focus-visible{outline:2px solid var(--dept-color,var(--primary));outline-offset:2px}
+.dept-head{display:flex;align-items:center;gap:10px}
+.dept-dot{width:12px;height:12px;border-radius:50%;background:var(--dept-color,var(--primary));flex:none}
+.dept-name{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:.5px}
+.dept-special-tag{
+  margin-left:auto;font-size:11px;color:#fff;background:var(--c-spc);
+  padding:2px 9px;border-radius:10px;letter-spacing:1px;flex:none;
+}
+.dept-desc{margin-top:8px;font-size:13.5px;color:var(--muted);line-height:1.65}
+.dept-cap{margin-top:8px;font-size:12.5px;color:var(--deep)}
+.dept-cap .cap-label{font-weight:700;color:var(--primary)}
+.dept-roles{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;display:none;flex-direction:column;gap:8px}
+.dept-card.open .dept-roles{display:flex}
+.dept-role{padding:9px 12px;border-radius:var(--radius-sm);background:var(--bg);border:1px solid var(--line)}
+.dept-role .r-title{font-size:13.5px;font-weight:700;color:var(--ink)}
+.dept-role .r-title .r-slug{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-weight:500;margin-left:6px}
+.dept-role .r-desc{margin-top:4px;font-size:12.5px;color:var(--muted);line-height:1.6}
+.dept-mount{margin-top:8px;font-size:12px;color:var(--c-spc)}
+.dept-arrow{margin-left:auto;color:var(--faint);font-size:12px;flex:none;transition:transform .18s}
+.dept-card.open .dept-arrow{transform:rotate(180deg)}
+
+/* ================= 模拟器:进度条 ================= */
+.sim-progress{
+  height:10px;border-radius:5px;background:#E4E7F0;overflow:hidden;
+  border:1px solid var(--line);
+}
+.sim-progress-fill{
+  height:100%;width:12.5%;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  border-radius:5px;
+  transition:width .4s ease;
+}
+.sim-counter{
+  margin-top:10px;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:1px;
+}
+
+/* ================= 模拟器:步骤卡 ================= */
+.sim-step{
+  margin-top:14px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:20px 24px;
+}
+.sim-step .step-no{
+  display:inline-block;font-size:12px;font-weight:700;color:#fff;
+  background:var(--primary);border-radius:12px;padding:2px 12px;letter-spacing:1px;margin-bottom:10px;
+}
+.sim-step h3{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:.5px}
+.sim-step .step-desc{margin-top:6px;color:var(--muted);font-size:15px}
+.sim-step .step-action{
+  margin-top:12px;padding:10px 14px;border-radius:var(--radius-sm);
+  background:var(--bg);border:1px solid var(--line);
+  font-size:14px;line-height:1.7;color:#1F2937;
+}
+.sim-step .step-action .act-label{font-weight:700;color:var(--deep)}
+
+/* ================= 模拟器:操作区 ================= */
+.sim-options{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.sim-opt{
+  display:flex;align-items:flex-start;gap:10px;
+  border:1px solid var(--line);background:var(--panel);
+  border-radius:var(--radius-sm);padding:12px 14px;
+  cursor:pointer;text-align:left;transition:all .15s;
+}
+.sim-opt:hover{border-color:var(--primary);background:#EEF2FF}
+.sim-opt.is-picked{border-color:var(--primary);background:#EEF2FF;box-shadow:0 0 0 2px rgba(79,70,229,.18)}
+.sim-opt.is-picked.good{border-color:var(--ok);background:#ECFDF5;box-shadow:0 0 0 2px rgba(5,150,105,.18)}
+.sim-opt.is-picked.bad{border-color:var(--danger);background:#FEF2F2;box-shadow:0 0 0 2px rgba(220,38,38,.16)}
+.sim-opt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sim-opt .opt-mark{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);margin-top:2px;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sim-opt.is-picked .opt-mark{border-color:var(--primary);background:var(--primary)}
+.sim-opt.is-picked.good .opt-mark{border-color:var(--ok);background:var(--ok)}
+.sim-opt.is-picked.bad .opt-mark{border-color:var(--danger);background:var(--danger)}
+.sim-opt .opt-body .opt-label{font-size:14.5px;font-weight:700;color:var(--ink)}
+.sim-opt .opt-body .opt-note{margin-top:3px;font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* ================= 模拟器:结果区 ================= */
+.sim-result{
+  margin-top:16px;padding:14px 18px;border-radius:var(--radius-sm);
+  border:1px solid var(--line);background:var(--bg);
+  font-size:14.5px;line-height:1.7;color:#1F2937;min-height:0;
+}
+.sim-result .res-good{color:var(--ok);font-weight:700}
+.sim-result .res-bad{color:var(--danger);font-weight:700}
+.sim-result .res-neutral{color:var(--deep);font-weight:700}
+
+/* ================= 模拟器:控制按钮 ================= */
+.sim-controls{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  font-size:14.5px;padding:10px 24px;border-radius:12px;cursor:pointer;
+  transition:all .16s;letter-spacing:1px;
+}
+.btn:hover{border-color:var(--primary);color:var(--primary)}
+.btn:disabled{opacity:.45;cursor:not-allowed;border-color:var(--line);color:var(--muted)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn-primary{
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  border-color:transparent;color:#fff;font-weight:700;
+  box-shadow:0 4px 14px rgba(79,70,229,.35);
+}
+.btn-primary:hover:not(:disabled){color:#fff;box-shadow:0 6px 18px rgba(79,70,229,.45);transform:translateY(-1px)}
+
+/* ================= 页脚(site-footer) ================= */
+.site-footer{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:14px 28px;background:#fff;border-top:1px solid var(--line);
+  color:var(--muted);font-size:12.5px;letter-spacing:.5px;
+}
+.foot-hint{color:var(--faint)}
+.foot-brand{color:var(--deep);font-weight:600}
+.foot-version{font-family:var(--mono);color:var(--faint)}
+
+/* ================= 响应式(窄屏可读) ================= */
+@media (max-width:760px){
+  .site-header{flex-direction:column;align-items:flex-start;height:auto;padding:12px 16px;gap:10px}
+  .brand-zh{font-size:17px}
+  .view-title{font-size:23px}
+  #app{padding:20px 12px 40px}
+  .gallery-panels .g-panel{padding:16px}
+  .org-grid{grid-template-columns:1fr}
+  .sim-step{padding:16px}
+  .sim-controls .btn{flex:1}
+  .site-footer{flex-direction:column;align-items:flex-start;gap:6px}
+}
+@media (max-width:420px){
+  .g-tab{padding:6px 12px;font-size:13px}
+  .brand-lockup .logo{width:54px;height:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}

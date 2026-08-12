@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>思无界 Boundless Mind · 把想法交付成完整结果</title>
+<!--
+  @file    index.html
+  @brief   交互式 demo 页面骨架——品牌页头 + 展厅 + 模拟器 + 页脚
+  @author  ui-designer | 项目: self-intro | Phase 2 · T8
+  @date    2026-08-12
+
+  @details
+  本文件只负责「骨架与语义容器」,数据来自 data.js(window.DEMO_DATA),
+  交互逻辑由 app.js(T9, developer 提供)绑定。脚本顺序必须为 data.js → app.js。
+  容器 id/class 约定供 app.js 绑定,详见各容器注释。
+
+  @note
+  - 无外部依赖:不引 CDN / 外部字体,图标全部内联 SVG。
+  - 品牌:徽标 = 无限环 ∞(靛蓝 #4F46E5 → 青 #06B6D4 渐变)+ 交汇四角星。
+  - app.js 由研发部 T9 提供,本文件先行挂载引用。
+-->
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============================================================
+     页头(site-header):品牌徽标 + 导航(展厅 / 模拟器 两主视图切换)
+     ============================================================ -->
+<header class="site-header">
+  <div class="brand-lockup">
+    <!-- 品牌徽标:无限环 ∞(靛蓝→青渐变)+ 交汇四角星,见 brand.logoDesc -->
+    <svg class="logo" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="思无界 Boundless Mind 无限环徽标">
+      <defs>
+        <linearGradient id="bmHeader" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#4F46E5"/>
+          <stop offset="1" stop-color="#06B6D4"/>
+        </linearGradient>
+      </defs>
+      <!-- 双环交汇的无限环 ∞ -->
+      <path d="M25 20 C25 5 50 5 50 20 C50 35 75 35 75 20 C75 5 50 5 50 20 C50 35 25 35 25 20 Z"
+            fill="none" stroke="url(#bmHeader)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- 交汇处的四角星(思想节点) -->
+      <path d="M50 12 L52.7 17.3 L58 20 L52.7 22.7 L50 28 L47.3 22.7 L42 20 L47.3 17.3 Z" fill="#06B6D4"/>
+    </svg>
+    <div class="brand-word">
+      <span class="brand-zh">思无界</span>
+      <span class="brand-en">BOUNDLESS MIND</span>
+    </div>
+  </div>
+
+  <!-- 主视图导航:app.js 绑定点击切换 #view-gallery / #view-simulator -->
+  <nav class="site-nav" role="navigation" aria-label="主视图切换">
+    <button id="nav-gallery" class="nav-btn is-active" type="button" aria-selected="true">展厅</button>
+    <button id="nav-simulator" class="nav-btn" type="button" aria-selected="false">模拟器</button>
+  </nav>
+</header>
+
+<main id="app">
+
+  <!-- ============================================================
+       展厅视图(view-gallery):tab 选项卡 + 内容面板 + 部门网格
+       ============================================================ -->
+  <section id="view-gallery" class="view is-active" data-view="gallery">
+    <div class="view-head">
+      <h1 class="view-title">展厅</h1>
+      <p class="view-sub">思无界 Boundless Mind · 组织架构与运行机制</p>
+    </div>
+
+    <!-- 板块选项卡容器:app.js 依 DEMO_DATA.gallery 渲染 tab 列表 -->
+    <div id="gallery-tabs" class="gallery-tabs" role="tablist" aria-label="内容板块"></div>
+
+    <!-- 板块内容面板容器:app.js 渲染当前 tab 的标题/描述/要点 -->
+    <div id="gallery-panels" class="gallery-panels"></div>
+
+    <!-- 部门网格容器:组织架构 tab(showDepartments)时,app.js 依 DEMO_DATA.departments
+         渲染 7 部门卡片;部门卡点击可展开岗位列表 -->
+    <div id="org-grid" class="org-grid" aria-label="7 部门组织架构"></div>
+  </section>
+
+  <!-- ============================================================
+       模拟器视图(view-simulator):8 阶段向导
+       进度条 + 步骤卡 + 操作区 + 上一步/下一步/重置
+       ============================================================ -->
+  <section id="view-simulator" class="view" data-view="simulator" hidden>
+    <div class="view-head">
+      <h1 class="view-title">开一家公司</h1>
+      <p class="view-sub">从想法到完整结果,逐步走一遍 8 阶段流水线</p>
+    </div>
+
+    <!-- 进度条:fill 宽度由 app.js 按当前步更新 -->
+    <div id="sim-progress" class="sim-progress" role="progressbar" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1">
+      <div id="sim-progress-fill" class="sim-progress-fill"></div>
+    </div>
+
+    <!-- 步计数:如「第 1 / 8 步 · 立项」 -->
+    <div id="sim-counter" class="sim-counter">第 1 / 8 步</div>
+
+    <!-- 步骤卡:app.js 渲染当前步的标题/说明/操作(action) -->
+    <article id="sim-step" class="sim-step" aria-live="polite"></article>
+
+    <!-- 操作区:app.js 渲染当前步的可操作选项(选项卡可点击) -->
+    <div id="sim-options" class="sim-options" aria-label="本步操作选项"></div>
+
+    <!-- 结果区:选择选项后,app.js 在此显示该选项的反馈或本步结果 -->
+    <div id="sim-result" class="sim-result" aria-live="polite"></div>
+
+    <!-- 向导控制:上一步 / 重置 / 下一步 -->
+    <div class="sim-controls">
+      <button id="sim-prev" class="btn" type="button">上一步</button>
+      <button id="sim-reset" class="btn" type="button">重置</button>
+      <button id="sim-next" class="btn btn-primary" type="button">下一步</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     页脚(site-footer):术语提示 + 品牌 + 版本
+     ============================================================ -->
+<footer class="site-footer">
+  <span class="foot-hint">术语基准 CONTEXT.md</span>
+  <span class="foot-brand">思无界 Boundless Mind · 把想法交付成完整结果</span>
+  <span class="foot-version">demo v1.0 · 2026-08-12 · Phase 2</span>
+</footer>
+
+<!-- 脚本顺序:data.js(定义 window.DEMO_DATA)→ app.js(读取并绑定,由 T9 提供) -->
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
