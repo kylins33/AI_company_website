@@ -18,7 +18,8 @@
  *   - 品牌名唯一写法「思无界 Boundless Mind」;Logo 锁版用全大写「BOUNDLESS MIND」。
  *   - 8 阶段节点名 / 部门名 / 岗位名与 CONTEXT.md 一字不差。
  *
- * @note   禁止编造数据:brand.repoUrl 在 T10 部署时填写实际 Gitea raw 直链地址,暂为空字符串。
+ * @note   禁止编造数据:brand.repoUrl 已填写实际部署地址——GitHub Pages 公司网站
+ *         https://kylins33.github.io/AI_company_website/ (2026-08-12 部署)。
  * @warning 本文件只读挂载到全局 window.DEMO_DATA,不产生任何副作用。
  */
 window.DEMO_DATA = {
@@ -52,7 +53,7 @@ window.DEMO_DATA = {
         '配奖赏机制与监督机制,保障交付质量',
         '五要素齐备:md 员工 · 奖赏 · 监督 · 管理层分配·验收 · 完整交付',
         '定位差异:现有框架无一家同时具备这五要素;这套框架本身就是要开源分享的产品',
-        '三者职责边界:skill 负责「启动与阶段流程」,subagent 负责「员工执行」,hooks 负责「硬约束」'
+        '三者职责边界:skill 负责「启动与阶段流程」,员工按 role.md 执行,hooks 负责「硬约束」'
       ]
     },
     {
