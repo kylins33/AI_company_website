@@ -57,7 +57,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  background:var(--bg);
+  background:#060714;  /* 深空底,与 #space-bg 渐变衔接,避免滚动时露白边 */
   color:var(--ink);
   font-family:var(--font);
   font-size:16px;
@@ -68,6 +68,53 @@ body{
 }
 button{font-family:inherit}
 [hidden]{display:none !important}
+
+/* ================= 星空背景(space-bg) ================= */
+#space-bg{
+  position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 82% -8%, rgba(79,70,229,.22), transparent 62%),
+    radial-gradient(900px 520px at -8% 108%, rgba(6,182,212,.15), transparent 62%),
+    radial-gradient(700px 420px at 55% 120%, rgba(139,92,246,.10), transparent 60%),
+    linear-gradient(180deg,#060714 0%,#0a1030 48%,#101a3c 100%);
+}
+/* 星点:随机分布由 JS 内联定位,这里负责闪烁 */
+#space-bg .star{
+  position:absolute;border-radius:50%;background:#fff;
+  animation:twinkle 3s ease-in-out infinite;
+}
+#space-bg .star.glow{box-shadow:0 0 6px rgba(255,255,255,.65)}
+@keyframes twinkle{
+  0%,100%{opacity:.12;transform:scale(1)}
+  50%{opacity:.85;transform:scale(1.3)}
+}
+/* 星球:球体(外层径向渐变+内层条纹旋转),半透明、慢速、不打乱主内容 */
+#space-bg .planet{
+  position:absolute;border-radius:50%;overflow:hidden;
+  box-shadow:inset -18px -14px 44px rgba(0,0,0,.55),
+             0 0 52px var(--pglow,rgba(79,70,229,.30));
+}
+#space-bg .planet::before{
+  content:"";position:absolute;inset:-25%;
+  background:
+    repeating-linear-gradient(115deg, rgba(255,255,255,.13) 0 10px, transparent 10px 26px),
+    radial-gradient(circle at 34% 30%, rgba(255,255,255,.26), transparent 42%);
+  animation:planetSpin var(--pspin,44s) linear infinite;
+}
+@keyframes planetSpin{to{transform:rotate(360deg)}}
+/* 流星:右上→左下斜向划落,一次性闪现(JS 随机生成后自清理) */
+#space-bg .meteor{
+  position:absolute;width:112px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95) 55%,rgba(165,180,252,.9));
+  filter:drop-shadow(0 0 6px rgba(165,180,252,.75));
+  transform:rotate(-35deg);
+  animation:meteorFall 1s ease-in forwards;
+}
+@keyframes meteorFall{
+  0%{opacity:0;transform:translate(0,0) rotate(-35deg)}
+  8%{opacity:1}
+  100%{opacity:0;transform:translate(-360px,232px) rotate(-35deg)}
+}
 
 /* ================= 页头(site-header) ================= */
 .site-header{
@@ -88,6 +135,14 @@ button{font-family:inherit}
 .brand-word{display:flex;flex-direction:column;line-height:1.2;min-width:0}
 .brand-zh{font-size:19px;font-weight:800;color:#fff;letter-spacing:3px;white-space:nowrap}
 .brand-en{font-size:9px;font-weight:600;letter-spacing:3.5px;color:#A5B4FC;margin-top:2px;white-space:nowrap}
+
+/* 页头公司使命:一句话公司介绍,居中占位、窄屏隐藏防挤压 */
+.site-mission{
+  flex:1;min-width:0;text-align:center;padding:0 14px;
+  font-size:13px;letter-spacing:1.5px;color:#C7D2FE;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.site-mission::before{content:"∞ ";color:var(--accent);font-weight:800}
 
 /* 主视图导航 */
 .site-nav{display:flex;gap:8px;flex:none}
@@ -112,16 +167,17 @@ button{font-family:inherit}
 .nav-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* ================= 主区域布局 ================= */
-#app{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:28px 20px 48px}
+/* 内容层高于 #space-bg(z-index:0),白卡落在星空上保持可读 */
+#app{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:28px 20px 48px;position:relative;z-index:1}
 .view{display:none}
 .view.is-active{display:block;animation:fadeIn .28s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* 视图头部 */
+/* 视图头部(直接落在星空底上,用浅色保证可读) */
 .view-head{margin-bottom:20px}
-.view-title{font-size:28px;font-weight:800;letter-spacing:1px;color:var(--ink)}
-.view-title::before{content:"∞ ";color:var(--primary);font-weight:800}
-.view-sub{margin-top:4px;color:var(--muted);font-size:14px;letter-spacing:.5px}
+.view-title{font-size:28px;font-weight:800;letter-spacing:1px;color:#E0E7FF}
+.view-title::before{content:"∞ ";color:var(--accent);font-weight:800}
+.view-sub{margin-top:4px;color:#A5B4FC;font-size:14px;letter-spacing:.5px}
 
 /* ================= 展厅:选项卡 ================= */
 .gallery-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
@@ -212,7 +268,7 @@ button{font-family:inherit}
   transition:width .4s ease;
 }
 .sim-counter{
-  margin-top:10px;font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:1px;
+  margin-top:10px;font-family:var(--mono);font-size:13px;color:#A5B4FC;letter-spacing:1px;
 }
 
 /* ================= 模拟器:步骤卡 ================= */
@@ -284,17 +340,30 @@ button{font-family:inherit}
 }
 .btn-primary:hover:not(:disabled){color:#fff;box-shadow:0 6px 18px rgba(79,70,229,.45);transform:translateY(-1px)}
 
-/* ================= 页脚(site-footer) ================= */
+/* ================= 页脚(site-footer,深色玻璃贴合星空主题) ================= */
 .site-footer{
   display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-  padding:14px 28px;background:#fff;border-top:1px solid var(--line);
-  color:var(--muted);font-size:12.5px;letter-spacing:.5px;
+  padding:14px 28px;position:relative;z-index:1;
+  background:rgba(15,23,42,.72);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-top:1px solid rgba(255,255,255,.08);
+  color:#A5B4FC;font-size:12.5px;letter-spacing:.5px;
 }
-.foot-hint{color:var(--faint)}
-.foot-brand{color:var(--deep);font-weight:600}
-.foot-version{font-family:var(--mono);color:var(--faint)}
+.foot-hint{color:#7C87A8}
+.foot-brand{color:#C7D2FE;font-weight:600}
+.foot-version{font-family:var(--mono);color:#6B7692}
+
+/* smoke 自检报告:置于内容层之上、浅底深字可读 */
+#smoke-report{
+  position:relative;z-index:5;margin:0 20px 20px;padding:12px 16px;
+  background:rgba(255,255,255,.94);border-radius:8px;color:#111827;
+  font-family:var(--mono);font-size:12px;line-height:1.7;white-space:pre-wrap;
+}
 
 /* ================= 响应式(窄屏可读) ================= */
+@media (max-width:920px){
+  .site-mission{display:none}  /* 窄屏让位品牌与导航,使命下沉到「公司是什么」tab */
+}
 @media (max-width:760px){
   .site-header{flex-direction:column;align-items:flex-start;height:auto;padding:12px 16px;gap:10px}
   .brand-zh{font-size:17px}

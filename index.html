@@ -25,6 +25,16 @@
 <body>
 
 <!-- ============================================================
+     星空背景(space-bg):固定底层——星野闪烁 + 旋转星球 + 随机流星
+     纯 CSS/JS 实现,无外部依赖;星点/星球/流星由 app.js initSpaceBg() 生成
+     ============================================================ -->
+<div id="space-bg" aria-hidden="true">
+  <div id="space-stars" class="stars"></div>
+  <div id="space-planets" class="planets"></div>
+  <div id="space-meteors" class="meteors"></div>
+</div>
+
+<!-- ============================================================
      页头(site-header):品牌徽标 + 导航(展厅 / 模拟器 两主视图切换)
      ============================================================ -->
 <header class="site-header">
@@ -48,6 +58,9 @@
       <span class="brand-en">BOUNDLESS MIND</span>
     </div>
   </div>
+
+  <!-- 页头公司使命:公司介绍一句话,文案由 app.js 从 DEMO_DATA.brand.mission 绑定 -->
+  <div class="site-mission" id="site-mission" role="note" aria-label="公司使命"></div>
 
   <!-- 主视图导航:app.js 绑定点击切换 #view-gallery / #view-simulator -->
   <nav class="site-nav" role="navigation" aria-label="主视图切换">

@@ -33,6 +33,7 @@ window.DEMO_DATA = {
     en: 'Boundless Mind', // 正文/标题/页脚形态
     logoDesc: '无限环 ∞,靛蓝→青渐变,交汇四角星',
     tagline: '把想法交付成完整结果', // 主标
+    mission: '致力于打造一台让任意想法都能交付成完整结果的 AI 公司', // 公司使命(页头常驻公司介绍)
     framework: 'AI 公司流水线 (AI Company Pipeline)', // 框架/产品名
     runOn: '运行于 Claude Code',
     deploy: 'GitHub Pages（公开，免登录访问，无需域名）',

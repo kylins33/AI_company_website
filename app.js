@@ -917,6 +917,86 @@
     }
 
     // =====================================================================
+    // 星空背景(space-bg):星野闪烁 + 旋转星球 + 随机流星
+    // 纯 JS/CSS,无外部依赖;尊重 prefers-reduced-motion(静止不闪不划)
+    // =====================================================================
+
+    /**
+     * @brief 初始化星空背景:生成星野、定位旋转星球、调度随机流星
+     * @note 填充 index.html 提供的 #space-bg 三个空容器;装饰层,
+     *       pointer-events:none 由 CSS 保证不阻挡交互。
+     */
+    function initSpaceBg() {
+        var bg = qs('#space-bg');
+        if (!bg) { return; }
+        var reduced = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // 1) 星野:约 110 颗随机分布、随机闪烁节奏的星点
+        var starsHost = qs('#space-stars');
+        if (starsHost) {
+            var i;
+            for (i = 0; i < 110; i++) {
+                var s = el('span', 'star');
+                s.style.left = (Math.random() * 100).toFixed(2) + '%';
+                s.style.top = (Math.random() * 100).toFixed(2) + '%';
+                var size = (Math.random() * 1.6 + 1).toFixed(1);
+                s.style.width = size + 'px';
+                s.style.height = size + 'px';
+                s.style.animationDelay = (Math.random() * 4).toFixed(2) + 's';
+                s.style.animationDuration = (Math.random() * 2.5 + 2.5).toFixed(2) + 's';
+                if (Math.random() < 0.12) { s.className = 'star glow'; }
+                starsHost.appendChild(s);
+            }
+        }
+
+        // 2) 旋转星球:3 颗(靛蓝/青/紫),半透明,外层球体+内部条纹慢速自旋
+        var planetsHost = qs('#space-planets');
+        if (planetsHost && !reduced) {
+            var planets = [
+                { size: 150, top: '-45px', right: '-40px', hue: 'rgba(99,102,241,.55)', glow: 'rgba(99,102,241,.35)', spin: 52 },
+                { size: 96, bottom: '-28px', left: '-26px', hue: 'rgba(34,211,238,.45)', glow: 'rgba(34,211,238,.30)', spin: 38 },
+                { size: 58, top: '38%', left: '5%', hue: 'rgba(167,139,250,.40)', glow: 'rgba(167,139,250,.25)', spin: 30 }
+            ];
+            planets.forEach(function (p) {
+                var pl = el('span', 'planet');
+                pl.style.width = p.size + 'px';
+                pl.style.height = p.size + 'px';
+                if (p.top !== undefined) { pl.style.top = p.top; }
+                if (p.right !== undefined) { pl.style.right = p.right; }
+                if (p.bottom !== undefined) { pl.style.bottom = p.bottom; }
+                if (p.left !== undefined) { pl.style.left = p.left; }
+                pl.style.setProperty('--pglow', p.glow);
+                pl.style.setProperty('--pspin', p.spin + 's');
+                pl.style.background = 'radial-gradient(circle at 32% 30%, ' + p.hue +
+                    ' 0%, rgba(6,10,30,.92) 68%)';
+                planetsHost.appendChild(pl);
+            });
+        }
+
+        // 3) 随机流星:每约 2.8-5.5 秒从右上划落一颗(首颗延迟 1.8s,reduced-motion 跳过)
+        var meteorsHost = qs('#space-meteors');
+        if (meteorsHost && !reduced) {
+            var spawnMeteor = function () {
+                var mt = el('span', 'meteor');
+                mt.style.left = (Math.random() * 70 + 10).toFixed(1) + '%';
+                mt.style.top = '2%';
+                mt.style.animationDuration = (0.9 + Math.random() * 0.5).toFixed(2) + 's';
+                meteorsHost.appendChild(mt);
+                setTimeout(function () {
+                    if (mt.parentNode) { mt.parentNode.removeChild(mt); }
+                }, 2200);
+            };
+            var meteorLoop = function () {
+                spawnMeteor();
+                var nextMs = Math.floor(Math.random() * 2700 + 2800);
+                setTimeout(meteorLoop, nextMs);
+            };
+            setTimeout(meteorLoop, 1800);
+        }
+    }
+
+    // =====================================================================
     // 初始化
     // =====================================================================
 
@@ -932,6 +1012,19 @@
         selectTab(state.activeTabId);
         renderSim();
         document.addEventListener('keydown', onKeydown);
+
+        // 页头公司使命:文案来自 DEMO_DATA.brand.mission(缺失则隐藏,不静默占位)
+        var missionEl = qs('#site-mission');
+        if (missionEl) {
+            if (data.brand && data.brand.mission) {
+                missionEl.textContent = data.brand.mission;
+            } else {
+                missionEl.style.display = 'none';
+            }
+        }
+
+        // 星空背景:星野 + 旋转星球 + 随机流星
+        initSpaceBg();
 
         // 暴露调试 API(供 smoke / tester 直接调用内部函数)
         window.__DEMO = {
