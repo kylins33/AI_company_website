@@ -89,6 +89,56 @@
     <!-- 部门网格容器:组织架构 tab(showDepartments)时,app.js 依 DEMO_DATA.departments
          渲染 7 部门卡片;部门卡点击可展开岗位列表 -->
     <div id="org-grid" class="org-grid" aria-label="7 部门组织架构"></div>
+
+    <!-- ============================================================
+         员工绩效 · 境界总览(展厅底部常驻):汇总卡 + 员工境界网格 + 公司整体框架图
+         数字由 app.js 依 STATS_DATA(stats-data.js,构建脚本生成)渲染;
+         框架图为静态架构示意(CSS 绘制),不依赖数据。
+         ============================================================ -->
+    <div id="stats-section" class="stats-section">
+      <h2 class="stats-title">员工绩效 · 境界总览</h2>
+      <p class="stats-sub">每位员工一份带职责、技能与规则的档案;绩效评分记入 memory.md,境界由优秀任务累积突破。</p>
+      <div id="stats-summary" class="stats-summary" aria-label="公司统计汇总"></div>
+      <div id="stats-grid" class="stats-grid" aria-label="员工境界总览"></div>
+
+      <div class="company-map" role="img" aria-label="公司整体框架图">
+        <h3 class="map-title">公司整体框架</h3>
+
+        <div class="map-mgmt">
+          <span class="map-node map-node-lg">管理层 · 管理部</span>
+          <p class="map-cap">AI 项目经理:立项 / 组队 / 拆解 / 分配 / 监督 / 组织验收 · 只管理不代劳</p>
+        </div>
+
+        <div class="map-flow">
+          <p class="map-flow-label">8 阶段流水线 · 关键节点须获人类批准</p>
+          <ol class="map-stages">
+            <li>① 立项</li>
+            <li>② 组队</li>
+            <li>③ 拆解</li>
+            <li>④ 执行</li>
+            <li>⑤ 监督</li>
+            <li>⑥ 验收</li>
+            <li>⑦ 复盘</li>
+            <li>⑧ 交付归档</li>
+          </ol>
+        </div>
+
+        <div class="map-layers">
+          <div class="map-card map-exec">执行层<br>执行部 / 研发部 / 测试部<br><small>产出交付物与测试证据</small></div>
+          <div class="map-card map-qual">监管层<br>质量部(只读判定)<br><small>只判定、只记录,不返工</small></div>
+          <div class="map-card map-special">特殊部门<br>按项目挂载<br><small>媒体等外部专业工具</small></div>
+        </div>
+
+        <div class="map-accept">
+          <span class="map-accept-label">三层验收</span>
+          <span class="map-accept-step">自动化检查</span><span class="map-arrow">→</span>
+          <span class="map-accept-step">AI 验收</span><span class="map-arrow">→</span>
+          <span class="map-accept-step map-last">人类批准</span>
+        </div>
+      </div>
+
+      <p class="stats-foot" id="stats-foot"></p>
+    </div>
   </section>
 
   <!-- ============================================================
@@ -137,8 +187,9 @@
   <span class="foot-version">demo v1.0 · 2026-08-12 · Phase 2</span>
 </footer>
 
-<!-- 脚本顺序:data.js(定义 window.DEMO_DATA)→ app.js(读取并绑定,由 T9 提供) -->
+<!-- 脚本顺序:data.js(定义 window.DEMO_DATA)→ stats-data.js(定义 window.STATS_DATA,由构建脚本生成)→ app.js(读取并绑定) -->
 <script src="data.js"></script>
+<script src="stats-data.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
