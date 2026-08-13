@@ -337,6 +337,106 @@
         return card;
     }
 
+    // =====================================================================
+    // 展厅:统计模块(员工绩效 · 境界总览)
+    // =====================================================================
+
+    /**
+     * @brief 渲染展厅底部统计模块(汇总卡 + 员工境界网格 + 更新时间脚注)
+     * @note 数据来自 window.STATS_DATA(stats-data.js,由构建脚本 company/tools/build-stats.js
+     *       生成);缺失/不完整时隐藏统计区(不阻断展厅主内容),不静默报错。
+     */
+    function renderStats() {
+        var sec = qs('#stats-section');
+        if (!sec) { return; }
+        if (!window.STATS_DATA || !window.STATS_DATA.summary ||
+            !isNonEmptyArray(window.STATS_DATA.employees)) {
+            sec.style.display = 'none';
+            return;
+        }
+        var s = window.STATS_DATA;
+
+        // 汇总卡
+        var sum = qs('#stats-summary');
+        if (sum) {
+            sum.innerHTML = '';
+            var items = [
+                { label: '员工', num: s.summary.employeeCount, hl: false },
+                { label: '完成任务', num: s.summary.taskCount, hl: false },
+                { label: '平均评分', num: s.summary.avgScore != null ? s.summary.avgScore : '—', hl: true },
+                { label: '优秀任务(≥95)', num: s.summary.excellentCount, hl: true },
+                { label: '境界突破', num: s.summary.breakthruCount, hl: false },
+                { label: '最高境界', num: s.summary.topRealm || '—', hl: true }
+            ];
+            items.forEach(function (it) {
+                var card = el('div', 'stat-card');
+                card.appendChild(el('div', 'stat-num' + (it.hl ? ' hl' : ''), String(it.num)));
+                card.appendChild(el('div', 'stat-label', it.label));
+                sum.appendChild(card);
+            });
+        }
+
+        // 员工境界网格
+        var grid = qs('#stats-grid');
+        if (grid) {
+            grid.innerHTML = '';
+            s.employees.forEach(function (e) { grid.appendChild(buildEmpCard(e)); });
+        }
+
+        // 更新时间脚注(让「同步更新」可见)
+        var foot = qs('#stats-foot');
+        if (foot) {
+            foot.textContent = '数据源 company/employees/<员工>/memory.md · 由 company/tools/build-stats.js 自动生成 · 更新于 ' +
+                (s.generatedAt || '—');
+        }
+    }
+
+    /**
+     * @brief 构建单个员工境界卡(称号/境界徽章/40 档进度条/评分与突破指标)
+     * @param {Object} e STATS_DATA.employees 中一项
+     * @return {HTMLElement}
+     */
+    function buildEmpCard(e) {
+        var card = el('article', 'emp-card');
+
+        // 头部:中文名 + slug + 境界徽章
+        var head = el('div', 'emp-head');
+        var nm = el('span', 'emp-name', e.zh || e.slug);
+        nm.appendChild(el('span', 'emp-slug', e.slug));
+        head.appendChild(nm);
+        head.appendChild(el('span', 'realm-badge', e.realm || '—'));
+        card.appendChild(head);
+
+        // 境界进度条:10 大境界 × 4 小境界 = 40 档,进度 = (idx+1)/40
+        var total = 40;
+        var idx = typeof e.idx === 'number' ? Math.max(0, Math.min(e.idx, total - 1)) : 0;
+        var pct = Math.round(((idx + 1) / total) * 1000) / 10;
+        var bar = el('div', 'realm-progress');
+        var fill = el('div', 'realm-progress-fill');
+        fill.style.width = pct + '%';
+        bar.appendChild(fill);
+        card.appendChild(bar);
+        card.appendChild(el('div', 'realm-step', '境界梯 ' + (idx + 1) + ' / ' + total));
+
+        // 指标标签
+        var meta = el('div', 'emp-meta');
+        if (e.score != null) {
+            meta.appendChild(el('span', 'emp-tag', '最新 ' + e.score));
+        } else {
+            meta.appendChild(el('span', 'emp-tag empty', '待首个任务'));
+        }
+        meta.appendChild(el('span', 'emp-tag', '平均 ' + (e.avgScore != null ? e.avgScore : '—')));
+        meta.appendChild(el('span', 'emp-tag', '任务 ' + e.tasks));
+        if (e.excellent > 0) {
+            meta.appendChild(el('span', 'emp-tag good', '优秀 ' + e.excellent));
+        }
+        if (e.breakthru > 0) {
+            meta.appendChild(el('span', 'emp-tag good', '突破 ' + e.breakthru));
+        }
+        card.appendChild(meta);
+        return card;
+    }
+
     /**
      * @brief 展开/收起部门卡片岗位列表
      * @param {HTMLElement} card .dept-card 元素
@@ -877,6 +977,24 @@
             return gv && gv.classList.contains('is-active') && !gv.hidden;
         });
 
+        // 5. 统计模块(依赖 STATS_DATA,含汇总卡 + 员工境界卡)
+        smokeCheck('统计模块 渲染汇总卡(6 项)', function () {
+            var sec = qs('#stats-section');
+            if (!sec || sec.style.display === 'none') { return false; }
+            return document.querySelectorAll('#stats-summary .stat-card').length === 6;
+        });
+        smokeCheck('统计模块 渲染员工境界卡(与 STATS_DATA 一致)', function () {
+            var sec = qs('#stats-section');
+            if (!sec || sec.style.display === 'none') { return false; }
+            var emps = document.querySelectorAll('#stats-grid .emp-card');
+            return window.STATS_DATA && emps.length === window.STATS_DATA.employees.length;
+        });
+        smokeCheck('统计模块 公司整体框架图渲染', function () {
+            var map = qs('.company-map');
+            return !!map && map.querySelectorAll('.map-stages li').length === 8 &&
+                map.querySelectorAll('.map-accept-step').length === 3;
+        });
+
         var g = data.gallery;
         for (var t = 0; t < g.length; t++) {
             (function (idx) {
@@ -1011,6 +1129,7 @@
         renderTabs();
         selectTab(state.activeTabId);
         renderSim();
+        renderStats();  // 展厅底部统计模块(依赖 STATS_DATA,缺失时自隐藏)
         document.addEventListener('keydown', onKeydown);
 
         // 页头公司使命:文案来自 DEMO_DATA.brand.mission(缺失则隐藏,不静默占位)
