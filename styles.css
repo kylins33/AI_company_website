@@ -256,6 +256,85 @@ button{font-family:inherit}
 .dept-arrow{margin-left:auto;color:var(--faint);font-size:12px;flex:none;transition:transform .18s}
 .dept-card.open .dept-arrow{transform:rotate(180deg)}
 
+/* ================= 展厅:统计模块(员工绩效 · 境界总览) ================= */
+.stats-section{margin-top:26px}
+.stats-title{font-size:22px;font-weight:800;color:#E0E7FF;letter-spacing:.5px}
+.stats-title::before{content:"◈ ";color:var(--accent)}
+.stats-sub{margin-top:4px;color:#A5B4FC;font-size:13.5px;letter-spacing:.5px}
+.stats-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-top:16px}
+.stat-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:14px 16px;text-align:center;
+}
+.stat-card .stat-num{font-size:26px;font-weight:800;color:var(--deep);letter-spacing:.5px;line-height:1.2}
+.stat-card .stat-num.hl{
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-card .stat-label{margin-top:2px;font-size:12.5px;color:var(--muted);letter-spacing:1px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:16px}
+.emp-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:14px 16px;transition:transform .16s,box-shadow .16s;
+}
+.emp-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.emp-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.emp-name{font-size:15px;font-weight:800;color:var(--ink);min-width:0}
+.emp-name .emp-slug{font-family:var(--mono);font-size:11px;color:var(--faint);font-weight:500;margin-left:6px}
+.realm-badge{
+  font-size:12px;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--primary),var(--accent));
+  padding:2px 10px;border-radius:12px;letter-spacing:1px;flex:none;white-space:nowrap;
+}
+.realm-progress{height:8px;border-radius:4px;background:#E4E7F0;overflow:hidden;border:1px solid var(--line);margin-top:12px}
+.realm-progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;transition:width .4s ease}
+.realm-step{margin-top:6px;font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.5px}
+.emp-meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.emp-tag{font-size:11.5px;color:var(--deep);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:2px 9px}
+.emp-tag .tag-k{color:var(--muted)}
+.emp-tag.good{color:var(--ok);border-color:#A7F3D0;background:#ECFDF5;font-weight:700}
+.emp-tag.empty{color:var(--faint)}
+.stats-foot{margin-top:14px;font-family:var(--mono);font-size:11.5px;color:#7C87A8;letter-spacing:.5px}
+
+/* ================= 展厅:公司整体框架图(CSS 绘制) ================= */
+.company-map{
+  margin-top:26px;padding:20px 22px;border-radius:var(--radius);
+  background:linear-gradient(180deg,rgba(15,23,42,.55),rgba(30,27,75,.35));
+  border:1px solid rgba(255,255,255,.12);color:#E0E7FF;
+}
+.map-title{font-size:18px;font-weight:800;letter-spacing:1px;color:#fff}
+.map-title::before{content:"⌁ ";color:var(--accent)}
+.map-mgmt{text-align:center;padding:6px 0 2px}
+.map-node{
+  display:inline-block;background:linear-gradient(90deg,var(--primary),var(--accent));
+  color:#fff;font-weight:800;font-size:15px;padding:8px 22px;border-radius:14px;letter-spacing:2px;
+}
+.map-node-lg{font-size:16px}
+.map-cap{margin-top:6px;font-size:12.5px;color:#A5B4FC}
+.map-flow{margin-top:16px;text-align:center}
+.map-flow-label{font-size:12.5px;color:#A5B4FC;letter-spacing:1px}
+.map-stages{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px}
+.map-stages li{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  color:#E0E7FF;font-size:12.5px;padding:4px 12px;border-radius:14px;letter-spacing:1px;
+}
+.map-layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:18px}
+.map-card{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+  border-radius:12px;padding:12px 14px;text-align:center;font-size:14px;font-weight:700;line-height:1.7;
+}
+.map-card small{display:block;font-weight:400;font-size:11.5px;color:#A5B4FC;margin-top:2px}
+.map-exec{border-top:3px solid var(--c-exec)}
+.map-qual{border-top:3px solid var(--c-qual)}
+.map-special{border-top:3px solid var(--c-spc);border-style:dashed;border-top-style:dashed}
+.map-accept{margin-top:18px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;font-size:13.5px;color:#A5B4FC}
+.map-accept-label{font-weight:800;color:#fff;letter-spacing:2px;margin-right:2px}
+.map-accept-step{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  color:#E0E7FF;padding:5px 16px;border-radius:14px;
+}
+.map-accept-step.map-last{background:linear-gradient(90deg,var(--primary),var(--accent));border-color:transparent;color:#fff;font-weight:700}
+.map-arrow{color:var(--accent);font-weight:800}
+
 /* ================= 模拟器:进度条 ================= */
 .sim-progress{
   height:10px;border-radius:5px;background:#E4E7F0;overflow:hidden;
@@ -371,6 +450,8 @@ button{font-family:inherit}
   #app{padding:20px 12px 40px}
   .gallery-panels .g-panel{padding:16px}
   .org-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .map-layers{grid-template-columns:1fr}
   .sim-step{padding:16px}
   .sim-controls .btn{flex:1}
   .site-footer{flex-direction:column;align-items:flex-start;gap:6px}
